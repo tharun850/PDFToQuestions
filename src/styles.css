@@ -1,1 +1,16 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: rgb(42, 73, 101);
+  color: white;
+}
+
+* {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;  
+  scrollbar-width: none;
+
+}

@@ -1,0 +1,34 @@
+<div class="exam-container">
+  <div class="content-wrapper" cdkScrollable>
+<div class="starter-container">
+    <div class="exam-info">
+      <h1>Welcome to the Exam</h1>
+      
+      <div class="exam-details">
+        <h2>Exam Instructions</h2>
+        <ul>
+          <li>Total Questions: {{ totalQuestions }}</li>
+          <li>Time per Question: 1.2 minutes</li>
+          <li>Total Duration: {{ formatTime(totalDuration) }}</li>
+          <li>Once started, the timer cannot be paused</li>
+          <li>Answer all questions before submitting</li>
+        </ul>
+      </div>
+
+      <div class="rules">
+        <h2>Rules & Guidelines</h2>
+        <ul>
+          <li>Do not refresh the page during the exam</li>
+          <li>Ensure stable internet connection</li>
+          <li>You can review and change answers during the exam</li>
+          <li>Submit before the timer ends</li>
+        </ul>
+      </div>
+
+      <div class="action-buttons">
+        <button class="start-btn" (click)="startExam()">Start Exam</button>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
