@@ -1,6 +1,31 @@
 <div class="exam-container">
   <div class="content-wrapper" cdkScrollable>
 <div class="starter-container">
+  <div class="exam-starter-container">
+    <h2>Upload PDF Document</h2>
+    <app-pdf-upload-component 
+      (uploadComplete)="onPdfUploadComplete($event)">
+    </app-pdf-upload-component>
+  </div>
+  <h2 class="center">OR</h2>
+  <div class="exam-starter-container">
+  <div class="paste-section">
+    <textarea
+      #pasteArea
+      [(ngModel)]="pastedText"
+      (click)="handlePaste()"
+      placeholder="Click here to paste questions from clipboard"
+      class="paste-textbox"
+    ></textarea>
+  </div>
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+  <div class="center">
+  <button class="start-btn" [disabled]="pastedText === ''" (click)="getTextFromTextBox()"> Get Questions</button>
+</div>
+</div>
+
     <div class="exam-info">
       <h1>Welcome to the Exam</h1>
       
@@ -26,7 +51,7 @@
       </div>
 
       <div class="action-buttons">
-        <button class="start-btn" (click)="startExam()">Start Exam</button>
+        <button class="start-btn" [disabled]="!totalQuestions" (click)="startExam()">Start Exam</button>
       </div>
     </div>
   </div>

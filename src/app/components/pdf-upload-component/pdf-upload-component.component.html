@@ -1,0 +1,45 @@
+<div class="upload-container">
+    <div class="upload-area" 
+         [class.dragging]="isDragging" 
+         (dragover)="onDragOver($event)" 
+         (dragleave)="onDragLeave($event)" 
+         (drop)="onDrop($event)"
+         [class.disabled]="isLoading">
+      
+      <input type="file" 
+             #fileInput 
+             (change)="onFileSelected($event)" 
+             accept=".pdf" 
+             style="display: none"
+             [disabled]="isLoading">
+      
+      <div class="upload-content">
+        <button (click)="fileInput.click()" 
+                class="upload-button"
+                [disabled]="isLoading">
+          Choose PDF File
+        </button>
+        <p>or drag and drop your file here</p>
+        <p *ngIf="selectedFile">Selected: {{ selectedFile.name }}</p>
+      </div>
+    </div>
+
+    <!-- Loading Animation -->
+    <div *ngIf="isLoading" class="loading-container">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">
+        <p *ngIf="uploadProgress < 100">Uploading PDF... {{ uploadProgress }}%</p>
+        <p *ngIf="uploadProgress === 100">Processing PDF... Please wait</p>
+      </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div *ngIf="uploadProgress > 0 && !apiResponse" class="progress-bar">
+      <div class="progress" [style.width.%]="uploadProgress"></div>
+      <span>{{ uploadProgress }}%</span>
+    </div>
+
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+  </div>

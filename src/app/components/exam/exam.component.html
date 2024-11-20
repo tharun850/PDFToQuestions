@@ -1,332 +1,236 @@
-<ng-container *ngIf="examState.isExamStarted || examService.isExamInProgress(); else unauthorized">
-  <div class="mini-progress">
-    <div class="mini-bar">
-      <div class="mini-fill" [style.width.%]="getProgress()"></div>
-    </div>
-  </div>
-
-  <div class="exam-container">
-    <!-- Your existing exam content -->
-    <div class="main-content">
-      <div class="question-display">
-        <div class="timer">
-          Time Remaining: {{ formatTime(examState.timeRemaining) }}
-        </div>
-
-        <!-- <div class="progress-bar">
-          <div class="progress" [style.width.%]="progress">
-            {{ progress }}% Complete
-          </div>
-        </div>  -->
-
-        <!-- exam.component.html -->
-        <div class="progress-bar-container">
-          <div class="progress-bar">
-            <div class="progress" [style.width.%]="getProgress()"></div>
-          </div>
-          <div class="progress-text">
-            Answered {{ getAnsweredQuestionsCount() }} of {{ examState.totalQuestions }}
-            <span class="progress-percentage">({{ getProgress() | number:'1.0-0' }}%) </span>
-          </div>
-        </div>
-        
-
-
-        <div class="current-question">
-        <h3>Question {{ examState.currentQuestion + 1 }} of {{ examState.totalQuestions }}</h3>
-        <p>{{ currentQuestion.question }}</p>
-        
-        
-        <!-- <div class="options">
-          <div *ngFor="let option of currentQuestion?.options; let i = index"
-               class="option"
-               [ngClass]="{'selected': isOptionSelected(i)}"
-               (click)="selectAnswer(i)">
-            {{ option }}
-          </div>
-        </div> -->
-
-        <div class="options">
-          <div *ngFor="let option of currentQuestion?.options | keyvalue; let i = index"
-               class="option"
-               [ngClass]="{'selected': isOptionSelected(i)}"
-               (click)="selectAnswer(i)">
-            {{ option.key }}. {{ option.value }}
-          </div>
-        </div>
-        
-
-        <!-- Navigation Buttons -->
-        <!-- <div class="question-navigation">
-          <button class="nav-btn prev-btn" 
-                  [disabled]="examState.currentQuestion === 0"
-                  (click)="navigateToPrevious()">
-            <span class="nav-icon">← Previous </span>
-          </button>
-          
-          <ng-container *ngIf="examState.currentQuestion === examState.totalQuestions - 1; else nextButton">
-            <button class="nav-btn submit-btn" 
-                    (click)="submitExam()">
-              Submit Exam
-            </button>
-          </ng-container>
-          
-          <ng-template #nextButton>
-            <button class="nav-btn next-btn" 
-                    (click)="navigateToNext()">
-              Next <span class="nav-icon" >→ </span>
-            </button>
-          </ng-template>
-        </div> -->
-
-
-        <div class="question-navigation">
-        <!-- exam.component.html -->
-<div class="question-actions">
-  <button class="nav-btn" (click)="navigateToPrevious()" [disabled]="examState.currentQuestion === 0">
-    <fa-icon [icon]="faChevronLeft"></fa-icon> Previous
-  </button>
-
-  <button class="reset-btn" 
-          (click)="resetCurrentQuestion()" 
-          [disabled]="!hasCurrentQuestionAnswer()"
-          [class.disabled]="!hasCurrentQuestionAnswer()">
-    <fa-icon [icon]="faUndo"></fa-icon> Reset
-  </button>
-
-  <button class="nav-btn" (click)="navigateToNext()" 
-          [disabled]="examState.currentQuestion === examState.totalQuestions - 1">
-    Next <fa-icon [icon]="faChevronRight"></fa-icon>
-  </button>
-</div>
-
-      </div>
+<div class="exam-content">
+  <ng-container *ngIf="examState.isExamStarted || examService.isExamInProgress(); else unauthorized">
+    <div class="mini-progress">
+      <div class="mini-bar">
+        <div class="mini-fill" [style.width.%]="getProgress()"></div>
       </div>
     </div>
-  </div>
 
-  
+    <div class="exam-container">
+      <div class="main-content">
+        <div class="question-display">
+          <div class="timer">
+            Time Remaining: {{ formatTime(examState.timeRemaining) }}
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar">
+              <div class="progress" [style.width.%]="getProgress()"></div>
+            </div>
+            <div class="progress-text">
+              Answered {{ getAnsweredQuestionsCount() }} of {{ examState.totalQuestions }}
+              <span class="progress-percentage">({{ getProgress() | number:'1.0-0' }}%) </span>
+            </div>
+          </div>
 
-  <!-- Question navigation panel -->
-  <div class="question-nav-panel">
-    <div class="nav-header">
-      <h3>Question Navigation</h3>
-    </div>
-    <div class="nav-grid-container">
-      <div class="nav-grid">
-        <button *ngFor="let q of questions; let i = index"
-                class="nav-button"
-                [ngClass]="{
+
+
+          <div class="current-question">
+            <h3>Question {{ examState.currentQuestion + 1 }} of {{ examState.totalQuestions }}</h3>
+            <p>{{ currentQuestion.question }}</p>
+
+            <div class="options">
+              <div *ngFor="let option of currentQuestion?.options | keyvalue; let i = index" class="option"
+                [ngClass]="{'selected': isOptionSelected(i)}" (click)="selectAnswer(i)">
+                {{ option.key }}. {{ option.value }}
+              </div>
+            </div>
+
+            <div class="question-navigation">
+              <div class="question-actions">
+                <button class="nav-btn" (click)="navigateToPrevious()" [disabled]="examState.currentQuestion === 0">
+                  <fa-icon [icon]="faChevronLeft"></fa-icon> Previous
+                </button>
+
+                <button class="reset-btn" (click)="resetCurrentQuestion()" [disabled]="!hasCurrentQuestionAnswer()"
+                  [class.disabled]="!hasCurrentQuestionAnswer()">
+                  <fa-icon [icon]="faUndo"></fa-icon> Reset
+                </button>
+
+                <button class="nav-btn" (click)="navigateToNext()"
+                *ngIf="examState.currentQuestion !== examState.totalQuestions - 1"
+                  [disabled]="examState.currentQuestion === examState.totalQuestions - 1">
+                  Next <fa-icon [icon]="faChevronRight"></fa-icon>
+                </button>
+                <button class="nav-submit" style="background-color: green; color: white;" (click)="submitExam()"
+                  *ngIf="examState.currentQuestion === examState.totalQuestions - 1">
+                  Submit Exam
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="nav-toggle-btn" (click)="toggleNav()" [class.nav-hidden]="isNavVisible">
+        <fa-icon [icon]="faChevronRight" *ngIf="!isNavVisible"></fa-icon>
+        <fa-icon [icon]="faChevronLeft" *ngIf="isNavVisible"></fa-icon>
+      </div>
+
+      <div class="question-nav-panel" [class.nav-hidden]="!isNavVisible">
+        <div class="nav-header">
+          <h3>Question Navigation</h3>
+        </div>
+        <div class="nav-grid-container">
+          <div class="nav-grid">
+            <button *ngFor="let q of questions; let i = index" class="nav-button" [ngClass]="{
                   'current': i === examState.currentQuestion,
                   'answered': q.selectedAnswer !== undefined
-                }"
-                (click)="navigateToQuestion(i)">
-          {{ i + 1 }}
+                }" (click)="navigateToQuestion(i)">
+              {{ i + 1 }}
+            </button>
+          </div>
+        </div>
+        <div class="nav-submit">
+          <button class="nav-btn submit-btn" (click)="submitExam()">
+            Submit Exam
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="results-container" *ngIf="examState.isExamCompleted">
+    <div class="results-card">
+      <h2>Exam Results</h2>
+
+      <div class="score-display">
+        <div class="score-circle">
+          <div class="score-number">
+            {{ (examState.score).toFixed(2) }}/{{ examState.totalQuestions*2 }}
+          </div>
+          <div class="score-percentage">
+            {{ (examState.score / examState.totalQuestions * 50).toFixed(1) }}%
+          </div>
+        </div>
+      </div>
+
+      <div class="results-details">
+        <div class="detail-item">
+          <span>Total Questions: </span>
+          <span>{{ examState.totalQuestions }} </span>
+        </div>
+        <div class="detail-item">
+          <span>Correct Answers: </span>
+          <span>{{ getcorrectAnsweredQuestionsCount() }} </span>
+        </div>
+        <div class="detail-item">
+          <span> Incorrect Answers: </span>
+          <span>{{ getIncorrectAnsweredQuestionsCount() }} </span>
+        </div>
+        <div class="detail-item">
+          <span> Unattempted Answers: </span>
+          <span>{{ examState.totalQuestions - getAnsweredQuestionsCount()}} </span>
+        </div>
+        <div class="detail-item">
+          <span>Time Taken: </span>
+          <span>{{ formatTime(totalTime - examState.timeRemaining) }} </span>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button class="review-btn" (click)="openDetailedReport()">
+          <fa-icon [icon]="faFileAlt"></fa-icon> Detailed Report
+        </button>
+        <button class="restart-btn" (click)="resetExam()">
+          <fa-icon [icon]="faRedo"></fa-icon> Reset Exam
+        </button>
+        <button class="restart-btn" (click)="navigateToStart()">
+          <fa-icon [icon]="faPlay"></fa-icon> Start New Exam
         </button>
       </div>
     </div>
-    <div class="nav-submit">
-      <button class="nav-btn submit-btn" 
-                    (click)="submitExam()">
-              Submit Exam
-      </button>
-    </div>
   </div>
-</div>
-</ng-container>
 
-<!-- <div class="results-container" *ngIf="examState.isExamCompleted">
-  <div class="results-card">
-    <h2>Exam Results</h2>
-    
-    <div class="score-display">
-      <div class="score-circle">
-        <div class="score-number">
-          {{ examState.score }}/{{ examState.totalQuestions }}
-        </div>
-        <div class="score-percentage">
-          {{ (examState.score / examState.totalQuestions * 100).toFixed(1) }}%
-        </div>
+  <div class="modal print-section" *ngIf="showDetailedReportModal" [@modalAnimation]>
+    <div class="modal-overlay" (click)="closeDetailedReport()"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Detailed Exam Report</h2>
+        <button class="close-btn no-print" (click)="closeDetailedReport()">
+          <fa-icon [icon]="faTimes"></fa-icon>
+        </button>
       </div>
-    </div>
 
-    <div class="results-details">
-      <div class="detail-item">
-        <span>Total Questions: </span>
-        <span>{{ examState.totalQuestions }} </span>
-      </div>
-      <div class="detail-item">
-        <span>Correct Answers: </span>
-        <span>{{ examState.score }} </span>
-      </div>
-      <div class="detail-item">
-        <span>Incorrect Answers: </span>
-        <span>{{ examState.totalQuestions - examState.score }} </span>
-      </div>
-      <div class="detail-item">
-        <span>Time Taken: </span>
-        <span>{{ formatTime(totalTime - examState.timeRemaining) }} </span>
-      </div>
-    </div>
-
-    <div class="action-buttons">
-      <button class="review-btn" (click)="reviewExam()">
-        Review Answers
-      </button>
-      
-      <button class="restart-btn" (click)="resetExam()">
-        Reset Exam
-      </button>
-      <button class="restart-btn" (click)="restartExam()">
-        Start New Exam
-      </button>
-    </div>
-  </div>
-</div> -->
-
-<!-- exam.component.html -->
-<div class="results-container" *ngIf="examState.isExamCompleted">
-  <div class="results-card">
-    <h2>Exam Results</h2>
-    
-    <div class="score-display">
-      <div class="score-circle">
-        <div class="score-number">
-          {{ examState.score }}/{{ examState.totalQuestions*2 }}
-        </div>
-        <div class="score-percentage">
-          {{ (examState.score / examState.totalQuestions * 50).toFixed(1) }}%
-        </div>
-      </div>
-    </div>
-
-    <div class="results-details">
-      <div class="detail-item">
-        <span>Total Questions: </span>
-        <span>{{ examState.totalQuestions }} </span>
-      </div>
-      <div class="detail-item">
-        <span>Correct Answers: </span>
-        <span>{{ getcorrectAnsweredQuestionsCount() }} </span>
-      </div>
-      <div class="detail-item">
-        <span> Incorrect Answers: </span>
-        <span>{{ getIncorrectAnsweredQuestionsCount() }} </span>
-      </div>
-      <div class="detail-item">
-        <span> Unattempted Answers: </span>
-        <span>{{ examState.totalQuestions - getAnsweredQuestionsCount()}} </span>
-      </div>
-      <div class="detail-item">
-        <span>Time Taken: </span>
-        <span>{{ formatTime(totalTime - examState.timeRemaining) }} </span>
-      </div>
-    </div>
-
-    <div class="action-buttons">
-      <button class="review-btn" (click)="openDetailedReport()">
-        <fa-icon [icon]="faFileAlt"></fa-icon> Detailed Report
-      </button>
-      <button class="restart-btn" (click)="resetExam()">
-        <fa-icon [icon]="faRedo"></fa-icon> Reset Exam
-      </button>
-      <button class="restart-btn" (click)="restartExam()">
-        <fa-icon [icon]="faPlay"></fa-icon> Start New Exam
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- Detailed Report Modal -->
-<div class="modal print-section" *ngIf="showDetailedReportModal" [@modalAnimation]>
-  <div class="modal-overlay" (click)="closeDetailedReport()"></div>
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2>Detailed Exam Report</h2>
-      <button class="close-btn no-print" (click)="closeDetailedReport()">
-        <fa-icon [icon]="faTimes"></fa-icon>
-      </button>
-    </div>
-
-    <div class="modal-body">
-      <div class="report-section">
-        <h3>Performance Summary</h3>
-        <div class="performance-stats">
-          <div class="stat-item">
-            <div class="stat-label">Score</div>
-            <div class="stat-value">{{ (examState.score / examState.totalQuestions * 100).toFixed(1) }}%</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-label">Time Taken</div>
-            <div class="stat-value">{{ formatTime(totalTime - examState.timeRemaining) }}</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-label">Accuracy</div>
-            <div class="stat-value">{{ (examState.score / examState.totalQuestions * 100).toFixed(1) }}%</div>
+      <div class="modal-body">
+        <div class="report-section">
+          <h3>Performance Summary</h3>
+          <div class="performance-stats">
+            <div class="stat-item">
+              <div class="stat-label">Score</div>
+              <div class="stat-value">{{ (examState.score / examState.totalQuestions * 100).toFixed(1) }}%</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Time Taken</div>
+              <div class="stat-value">{{ formatTime(totalTime - examState.timeRemaining) }}</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Accuracy</div>
+              <div class="stat-value">{{ (examState.score / examState.totalQuestions * 100).toFixed(1) }}%</div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="report-section print-avoid-break">
-        <h3>Question Analysis</h3>
-        <div class="question-analysis">
-          <div class="question-item" *ngFor="let question of questions; let i = index">
-            <div class="question-header">
-              <span class="question-number">Question {{ i + 1 }} </span>
-              <span class="question-status" 
-                    [ngClass]="{
+        <div class="report-section print-avoid-break">
+          <h3>Question Analysis</h3>
+          <div class="question-analysis">
+            <div class="question-item" *ngFor="let question of questions; let i = index">
+              <div class="question-header">
+                <span class="question-number">Question {{ i + 1 }} </span>
+                <span class="question-status" [ngClass]="{
                       'correct': question.selectedAnswer === question.answer,
                       'incorrect': question.selectedAnswer !== question.answer && question.selectedAnswer !== undefined,
                       'unattempted': question.selectedAnswer === undefined
                     }">
-                {{ question.selectedAnswer === undefined ? 'UnAttempted' : 
-                   question.selectedAnswer === question.answer ? 'Correct' : 'Incorrect' }}
-              </span>
-            </div>
-            <div class="question-content">
-              <p class="question-text">{{ question.question }}</p>
-              <div class="options-list">
-                <div class="option" *ngFor="let option of question.options | keyvalue"
-                [ngClass]="getOptionClass(option.key, question)">
-                  {{ option.key }}. {{ option.value }}
-                  <span class="option-indicator" *ngIf="option.key === question.selectedAnswer">Your Answer </span>
-                  <span class="option-indicator correct" *ngIf="option.key === question.answer">Correct Answer </span>
+                  {{ question.selectedAnswer === undefined ? 'UnAttempted' :
+                  question.selectedAnswer === question.answer ? 'Correct' : 'Incorrect' }}
+                </span>
+              </div>
+              <div class="question-content">
+                <p class="question-text">{{ question.question }}</p>
+                <div class="options-list">
+                  <div class="option" *ngFor="let option of question.options | keyvalue"
+                    [ngClass]="getOptionClass(option.key, question)">
+                    {{ option.key }}. {{ option.value }}
+                    <span class="option-indicator" *ngIf="option.key === question.selectedAnswer">Your Answer </span>
+                    <span class="option-indicator correct" *ngIf="option.key === question.answer">Correct Answer </span>
+                  </div>
+                </div>
+                <div class="explanation">
+                  <h4 *ngIf="question.selectedAnswer === undefined"> Note:</h4>
+                  <p *ngIf="question.selectedAnswer === undefined">This question was not attempted.</p>
+                  <br *ngIf="question.selectedAnswer === undefined" />
+                  <h4>Explanation:</h4>
+                  <p>{{ question.explain || 'No explanation available.' }}</p>
                 </div>
               </div>
-              <div class="explanation">
-                <h4 *ngIf="question.selectedAnswer === undefined"> Note:</h4>
-                <p *ngIf="question.selectedAnswer === undefined">This question was not attempted.</p>
-                <br *ngIf="question.selectedAnswer === undefined" />
-                <h4>Explanation:</h4>
-                <p >{{ question.explain || 'No explanation available.' }}</p>
-              </div>      
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="modal-footer no-print">
-      <button class="print-btn" (click)="printReport()">
-        <fa-icon [icon]="faPrint"></fa-icon> Print Report
-      </button>
-      <button class="close-btn" (click)="closeDetailedReport()">
-        <fa-icon [icon]="faTimes"></fa-icon> Close
-      </button>
-    </div>
-  </div>
-</div>
-
-
-
-<ng-template #unauthorized>
-  <div class="unauthorized-wrapper" *ngIf="!examState.isExamCompleted">
-    <div class="unauthorized-container">
-      <div class="unauthorized">
-        <h2>Please start the exam from the main page</h2>
-        <button class="return-btn" (click)="navigateToStart()">Return to Start</button>
+      <div class="modal-footer no-print">
+        <button class="print-btn" (click)="printReport()">
+          <fa-icon [icon]="faPrint"></fa-icon> Print Report
+        </button>
+        <button class="close-btn" (click)="closeDetailedReport()">
+          <fa-icon [icon]="faTimes"></fa-icon> Close
+        </button>
       </div>
     </div>
   </div>
-</ng-template>
 
+
+
+  <ng-template #unauthorized>
+    <div class="unauthorized-wrapper" *ngIf="!examState.isExamCompleted">
+      <div class="unauthorized-container">
+        <div class="unauthorized">
+          <h2>Please start the exam from the main page</h2>
+          <button class="return-btn" (click)="navigateToStart()">Return to Start</button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+</div>
