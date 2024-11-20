@@ -2,7 +2,7 @@
 import { Component, OnInit, OnDestroy, HostListener, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import {  Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ExamService } from '../../service/exam.service';
+import { ExamService } from '../../services/exam.service';
 import { ExamState } from '../../interface/exam-state';
 import { Router } from '@angular/router';
 import { QuestionModel } from '../../interface/question-model';
@@ -66,6 +66,9 @@ export class ExamComponent implements OnInit, OnDestroy {
   faTimes = faTimes;
   faPrint = faPrint;
 
+  isNavVisible: boolean = false;
+
+
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification($event: any) {
     if (this.examService.isExamInProgress()) {
@@ -91,6 +94,7 @@ export class ExamComponent implements OnInit, OnDestroy {
     if (this.examService.isExamInProgress()) {
       this.initializeState();
     }
+
   }
 
 
@@ -217,7 +221,7 @@ export class ExamComponent implements OnInit, OnDestroy {
       if (question.selectedAnswer === question.answer) {
         return score + 2;
       } else if(question.selectedAnswer !== undefined) {
-        return parseFloat((score - 0.66).toFixed(2));
+        return (score - 0.66);
       }
       return score;
     }, 0);
@@ -229,12 +233,6 @@ export class ExamComponent implements OnInit, OnDestroy {
     // You might want to show questions with correct/incorrect answers
   }
 
-  restartExam(): void {
-    if (confirm('Are you sure you want to start a new exam?')) {
-      this.examService.resetExam();
-      this.router.navigate(['/start']);
-    }
-  }
 
   private updateCurrentQuestion(): void {
     if(this.questions == null) return;
@@ -379,6 +377,10 @@ export class ExamComponent implements OnInit, OnDestroy {
 //   }
 //   console.log(closeBtn)
 // }
+
+toggleNav() {
+  this.isNavVisible = !this.isNavVisible;
+}
 
 
 
